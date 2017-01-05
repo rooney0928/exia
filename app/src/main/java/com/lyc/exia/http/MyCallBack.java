@@ -1,5 +1,9 @@
 package com.lyc.exia.http;
 
+import android.util.Log;
+
+import com.lyc.exia.bean.BaseBean;
+
 import rx.Observer;
 import rx.Subscriber;
 
@@ -18,7 +22,7 @@ public abstract class MyCallBack extends Subscriber {
     public interface OnServerListener{
         void onStart();
         void onSuccess(Object o);
-        void onFailed(Throwable e);
+        void onFailed(String error);
         void onFinish();
     }
 
@@ -36,11 +40,14 @@ public abstract class MyCallBack extends Subscriber {
 
     @Override
     public void onError(Throwable e) {
-        onReturnListener.onFailed(e);
+        onReturnListener.onFailed(e.getMessage());
     }
 
     @Override
     public void onNext(Object o) {
-        onReturnListener.onSuccess(o);
+        BaseBean baseBean = (BaseBean) o;
+        if(!baseBean.isError()){
+            onReturnListener.onSuccess(o);
+        }
     }
 }

@@ -28,7 +28,7 @@ public class MainModelImpl implements MainContract.Model {
 
     public interface OnReturnDataListener {
         void getHistory(HistoryBean bean);
-        void getFailed(Throwable throwable);
+        void getFailed(String error);
         /**
          * 验证开始
          */
@@ -72,7 +72,7 @@ public class MainModelImpl implements MainContract.Model {
             }
 
             @Override
-            public void onFailed(Throwable e) {
+            public void onFailed(String e) {
                 mOnReturnDataListener.getFailed(e);
             }
 

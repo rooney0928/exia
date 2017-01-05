@@ -13,7 +13,7 @@ public interface MainContract {
 
     interface View<A,B> extends BaseView<Presenter,HistoryBean> {
         void getHistory(A bean);
-        void getHistoryFailed(Throwable e);
+        void getHistoryFailed(String error);
         void requestStart();
         void requestEnd();
     }

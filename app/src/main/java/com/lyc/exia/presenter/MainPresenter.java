@@ -21,9 +21,10 @@ public class MainPresenter implements MainContract.Presenter {
             }
 
             @Override
-            public void getFailed(Throwable throwable) {
-                view.getHistoryFailed(throwable);
+            public void getFailed(String error) {
+                view.getHistoryFailed(error);
             }
+
 
             @Override
             public void requestStart() {

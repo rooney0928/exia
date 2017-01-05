@@ -25,6 +25,9 @@ public class MainActivity extends ToolBarActivity implements MainContract.View<H
     protected void setView() {
         mainPresenter = new MainPresenter(this);
         mainPresenter.getServerData();
+
+        Throwable e= new Throwable();
+        Log.e("test","eeee--"+e.getMessage());
     }
 
 
@@ -35,8 +38,8 @@ public class MainActivity extends ToolBarActivity implements MainContract.View<H
     }
 
     @Override
-    public void getHistoryFailed(Throwable e) {
-        Log.e("test",e.getMessage());
+    public void getHistoryFailed(String e) {
+        Log.e("test",e);
     }
 
 
