@@ -10,7 +10,9 @@ import rx.subscriptions.CompositeSubscription;
 public class RxHolder {
     private static CompositeSubscription mCompositeSubscription;
 
-    //RXjava注册
+    /**
+     *  RXjava注册
+     */
     public static void addSubscription(Subscription subscriber) {
         if (mCompositeSubscription == null) {
             mCompositeSubscription = new CompositeSubscription();
@@ -18,7 +20,9 @@ public class RxHolder {
         mCompositeSubscription.add(subscriber);
     }
 
-    //RXjava取消注册，以避免内存泄露
+    /**
+     *  RXjava取消注册，以避免内存泄露
+     */
     public static void unSubscribe() {
         if (mCompositeSubscription != null && mCompositeSubscription.hasSubscriptions()) {
             mCompositeSubscription.unsubscribe();

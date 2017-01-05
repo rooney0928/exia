@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.lyc.exia.utils.RxHolder;
+
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -15,7 +17,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     abstract protected int provideContentViewId();
 
-    private CompositeSubscription mCompositeSubscription;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -23,20 +24,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(provideContentViewId());
     }
 
-    public CompositeSubscription getCompositeSubscription() {
-        if (this.mCompositeSubscription == null) {
-            this.mCompositeSubscription = new CompositeSubscription();
-        }
-        return this.mCompositeSubscription;
-    }
 
 
-    public void addSubscription(Subscription s) {
-        if (this.mCompositeSubscription == null) {
-            this.mCompositeSubscription = new CompositeSubscription();
-        }
-        this.mCompositeSubscription.add(s);
-    }
 
     @Override
     protected void onDestroy() {
@@ -44,9 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         /**
          * 防止context泄露
          */
-        if (this.mCompositeSubscription != null) {
-            this.mCompositeSubscription.unsubscribe();
-        }
+        RxHolder.unSubscribe();
     }
 
 }
