@@ -1,6 +1,6 @@
 package com.lyc.exia.http;
 
-import com.lyc.exia.bean.Gank;
+import com.lyc.exia.bean.DayBean;
 import com.lyc.exia.bean.HistoryBean;
 
 import retrofit2.Retrofit;
@@ -28,5 +28,12 @@ public class RxHttp {
      */
     public static Observable<HistoryBean> getHistory() {
         return gankApi.getWeather();
+    }
+
+    /**
+     * 获取单日数据
+     */
+    public static Observable<DayBean> getDayData(String year, String month, String day){
+        return gankApi.getDayData(year,month,day);
     }
 }

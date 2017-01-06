@@ -21,7 +21,6 @@ package com.lyc.exia.base;
  * @param <T>
  */
 public interface BaseView<T,W> {
-    void setPresenter(T presenter);
     void updateView(W serverData);
     void updateError(String error);
     void requestStart();
