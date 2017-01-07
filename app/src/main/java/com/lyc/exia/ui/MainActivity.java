@@ -1,6 +1,9 @@
 package com.lyc.exia.ui;
 
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -40,13 +43,23 @@ public class MainActivity extends ToolBarActivity implements MainContract.View<H
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    @BindView(R.id.swipe_layout)
+    SwipeRefreshLayout swipe_layout;
     @BindView(R.id.rv_list)
     RecyclerView rv_list;
 
-    int page = 1;
+    int page1 = 1;
+    /**
+     * 最后可见条目
+     */
+    protected int lastVisibleItem;
 
     List<String> dateList;
     DayAdapter adapter;
+    StaggeredGridLayoutManager staggeredGridLayoutManager;
+    LinearLayoutManager linearLayoutManager;
+
+    private boolean isRefresh;
 
     @Override
     protected int provideContentViewId() {
@@ -63,28 +76,58 @@ public class MainActivity extends ToolBarActivity implements MainContract.View<H
         toolbar.setTitle(R.string.app_name);
         setSupportActionBar(toolbar);
 
-        StaggeredGridLayoutManager layoutManager =
-                new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+
+        linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
 //        GridLayoutManager layoutManager =
 //                new GridLayoutManager(this,2);
-        rv_list.setLayoutManager(layoutManager);
+        rv_list.setLayoutManager(linearLayoutManager);
         rv_list.setAdapter(adapter);
 
-        mainPresenter.getServerData();
+        swipe_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mainPresenter.getServerData();
 
+
+            }
+        });
+
+        rv_list.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+//                staggeredGridLayoutManager.invalidateSpanAssignments(); //防止第一行到顶部有空白区域
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE &&
+                        lastVisibleItem == adapter.getItemCount() - 1 && !isRefresh) {
+                    LogU.t("加载贡多");
+
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+
+        mainPresenter.getServerData();
     }
 
     @Override
     public void getHistory(HistoryBean bean) {
         //刷新列表或初始化
+        dateList.clear();
         dateList = bean.getResults();
-        adapter.setList(ArrayUtil.getData(dateList,page,30));
+        adapter.setList(ArrayUtil.getData(dateList, page1, 30));
         adapter.notifyDataSetChanged();
     }
 
     @Override
     public void getHistoryFailed(String e) {
-        Log.e("test", e);
+        ToastUtil.showSimpleToast(this, e);
     }
 
 
@@ -100,11 +143,15 @@ public class MainActivity extends ToolBarActivity implements MainContract.View<H
 
     @Override
     public void requestStart() {
-
+        isRefresh = true;
     }
 
     @Override
     public void requestEnd() {
+        if (swipe_layout != null && swipe_layout.isRefreshing()) {
+            swipe_layout.setRefreshing(false);
+        }
+        isRefresh = false;
     }
 
 

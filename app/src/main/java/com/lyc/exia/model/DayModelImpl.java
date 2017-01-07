@@ -7,6 +7,7 @@ import com.lyc.exia.bean.HistoryBean;
 import com.lyc.exia.contract.DayContract;
 import com.lyc.exia.http.MyCallBack;
 import com.lyc.exia.http.RxHttp;
+import com.lyc.exia.utils.LogU;
 import com.lyc.exia.utils.RxHolder;
 
 import rx.Observable;
@@ -36,7 +37,8 @@ public class DayModelImpl implements DayContract.Model{
 
     @Override
     public void requestDayData(String year, String month, String day) {
-        Observable<DayBean> request = RxHttp.getDayData(year,month,day);
+        Observable<DayBean> request = RxHttp.getDayData(year,month,day).cache();
+        LogU.e("xxx",month+"-"+day);
         MyCallBack.OnServerListener listener =  new MyCallBack.OnServerListener(){
 
             @Override

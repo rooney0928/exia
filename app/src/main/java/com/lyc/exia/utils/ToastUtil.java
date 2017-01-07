@@ -22,7 +22,7 @@ public class ToastUtil {
             toast = Toast.makeText(context, "", Toast.LENGTH_SHORT);
         }
         if (!TextUtils.isEmpty(msg)) {
-            LogU.e("toast", msg);
+            LogU.t(msg);
             toast.setText(msg);
             toast.show();
         }

@@ -16,6 +16,7 @@ import com.lyc.exia.R;
 import com.lyc.exia.bean.DayBean;
 import com.lyc.exia.contract.DayContract;
 import com.lyc.exia.presenter.DayPresenter;
+import com.lyc.exia.utils.LogU;
 import com.lyc.exia.utils.ToastUtil;
 
 import java.util.List;
@@ -55,7 +56,8 @@ public class DayAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof DayHolder) {
+
+        if (holder instanceof DayHolder && position >= 0) {
             DayHolder dayHolder = (DayHolder) holder;
             dayHolder.setData();
         }
@@ -88,7 +90,9 @@ public class DayAdapter extends RecyclerView.Adapter {
             String date = list.get(getAdapterPosition());
             String[] dates = date.split("-");
 
-            dayPresenter.requestDayData(dates[0], dates[1], dates[2]);
+            if (getAdapterPosition() ==11) {
+                dayPresenter.requestDayData(dates[0], dates[1], dates[2]);
+            }
         }
 
         @Override
@@ -101,13 +105,15 @@ public class DayAdapter extends RecyclerView.Adapter {
             String iosTitle = dayBean.getResults().getIosList().get(0).getDesc();
             String androidTitle = dayBean.getResults().getAndroidList().get(0).getDesc();
 
-            String title = iosTitle + "\n" + androidTitle;
+            Log.e("", getAdapterPosition() + "");
+            String date = list.get(getAdapterPosition());
+            String title = date + "\n" + iosTitle + "\n" + androidTitle;
             tv_title.setText(title);
         }
 
         @Override
         public void getDayDataFailed(String error) {
-            ToastUtil.showSimpleToast(context,error);
+            ToastUtil.showSimpleToast(context, getAdapterPosition() + "--" + error + "---");
         }
 
         @Override

@@ -35,7 +35,7 @@ public class MainModelImpl implements MainContract.Model {
 
     @Override
     public void getServerData() {
-        Observable<HistoryBean> request = RxHttp.getHistory();
+        Observable<HistoryBean> request = RxHttp.getHistory().cache();
 
 
         MyCallBack.OnServerListener listener =  new MyCallBack.OnServerListener(){

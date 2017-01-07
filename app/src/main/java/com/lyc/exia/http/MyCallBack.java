@@ -41,14 +41,14 @@ public abstract class MyCallBack extends Subscriber {
 
     @Override
     public void onError(Throwable e) {
-        e.printStackTrace();
+        LogU.t("error?--"+e);
         onReturnListener.onFailed(e.getMessage());
     }
 
     @Override
     public void onNext(Object o) {
         BaseBean baseBean = (BaseBean) o;
-        LogU.t("error--"+baseBean.isError());
+        LogU.t("ok--"+baseBean.isError());
         if(!baseBean.isError()){
             onReturnListener.onSuccess(o);
         }
