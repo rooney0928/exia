@@ -19,6 +19,11 @@ import com.lyc.exia.presenter.DayPresenter;
 import com.lyc.exia.utils.LogU;
 import com.lyc.exia.utils.ToastUtil;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.util.List;
 import java.util.Random;
 
@@ -28,13 +33,13 @@ import java.util.Random;
 
 public class DayAdapter extends RecyclerView.Adapter {
     private Context context;
-    private List<String> list;
+    private List<DayBean.ResultsBean> list;
 
     public DayAdapter(Context context) {
         this.context = context;
     }
 
-    public void setList(List<String> list) {
+    public void setList(List<DayBean.ResultsBean> list) {
         this.list = list;
     }
 
@@ -63,7 +68,7 @@ public class DayAdapter extends RecyclerView.Adapter {
         }
     }
 
-    class DayHolder extends RecyclerView.ViewHolder implements DayContract.View {
+    class DayHolder extends RecyclerView.ViewHolder {
         DayPresenter dayPresenter;
         CardView cardView;
         ImageView iv_header;
@@ -75,71 +80,43 @@ public class DayAdapter extends RecyclerView.Adapter {
             cardView = (CardView) itemView;
             iv_header = (ImageView) itemView.findViewById(R.id.iv_header);
             tv_title = (TextView) itemView.findViewById(R.id.tv_title);
-            dayPresenter = new DayPresenter(this);
         }
 
         public void setData() {
-            /*
-            String url = "http://imgsrc.baidu.com/forum/w%3D580/sign=e5a3bb1539292df597c3ac1d8c315ce2/a1258ecc7cd98d1070a4720b223fb80e7aec9094.jpg";
-            String date = list.get(getAdapterPosition());
-
-            Glide.with(context).load(url).centerCrop().into(iv_header);
-
-            tv_title.setText(date);
-            */
-            String date = list.get(getAdapterPosition());
-            String[] dates = date.split("-");
-
-            if (getAdapterPosition() ==11) {
-                dayPresenter.requestDayData(dates[0], dates[1], dates[2]);
+            DayBean.ResultsBean bean = list.get(getAdapterPosition());
+            String url = getUrlFromHtml(bean.getContent());
+            LogU.t("url--"+url);
+            if(!TextUtils.isEmpty(url)){
+                Glide.with(context).load(url).centerCrop().into(iv_header);
             }
+            String publish = bean.getPublishedAt();
+            String[] dates = publish.split("T");
+            tv_title.setText(dates[0] + " " + bean.getTitle());
+
+
+//            if (getAdapterPosition() ==11) {
+//                dayPresenter.requestDayData(dates[0], dates[1], dates[2]);
+//            }
         }
 
-        @Override
-        public void getDayData(DayBean dayBean) {
-//            Log.e("test",dayBean.getResults().getAndroidList().size()+"------------");
-            String benefit = dayBean.getResults().getBenefitList().get(0).getUrl();
-            if (!TextUtils.isEmpty(benefit)) {
-                Glide.with(context).load(benefit).centerCrop().into(iv_header);
-            }
-            String iosTitle = dayBean.getResults().getIosList().get(0).getDesc();
-            String androidTitle = dayBean.getResults().getAndroidList().get(0).getDesc();
+    }
 
-            Log.e("", getAdapterPosition() + "");
-            String date = list.get(getAdapterPosition());
-            String title = date + "\n" + iosTitle + "\n" + androidTitle;
-            tv_title.setText(title);
-        }
-
-        @Override
-        public void getDayDataFailed(String error) {
-            ToastUtil.showSimpleToast(context, getAdapterPosition() + "--" + error + "---");
-        }
-
-        @Override
-        public void updateView(DayBean serverData) {
-
-        }
-
-        @Override
-        public void updateError(String error) {
-
-        }
-
-        @Override
-        public void requestStart() {
-
-        }
-
-        @Override
-        public void requestEnd() {
-
-        }
+    private String getUrlFromHtml(String content) {
+//        LogU.t(content);
+        Document doc = Jsoup.parse(content);
+        Element pic = doc.getElementsByTag("img").first();
+        return pic.attr("src");
+//        Elements pEles = doc.getElementsByTag("p");
+//        for (int i = 0; i < pEles.size(); i++) {
+//            Element p = pEles.get(i);
+//
+//        }
     }
 
 
     @Override
     public int getItemCount() {
+
         return list == null ? 0 : list.size();
     }
 }

@@ -2,6 +2,7 @@ package com.lyc.exia.model;
 
 import android.util.Log;
 
+import com.lyc.exia.bean.DayBean;
 import com.lyc.exia.bean.HistoryBean;
 import com.lyc.exia.contract.MainContract;
 import com.lyc.exia.http.MyCallBack;
@@ -25,18 +26,16 @@ public class MainModelImpl implements MainContract.Model {
     public MainModelImpl(OnReturnDataListener mOnReturnDataListener) {
         this.mOnReturnDataListener = mOnReturnDataListener;
     }
-
     public interface OnReturnDataListener {
-        void getHistory(HistoryBean bean);
-        void getFailed(String error);
+        void getDayList(DayBean bean);
+        void getDayListError(String error);
         void requestStart();
         void requestEnd();
     }
 
     @Override
-    public void getServerData() {
-        Observable<HistoryBean> request = RxHttp.getHistory().cache();
-
+    public void getDayList(int size, int page) {
+        Observable<DayBean> request = RxHttp.getDayList(size,page);
 
         MyCallBack.OnServerListener listener =  new MyCallBack.OnServerListener(){
 
@@ -47,13 +46,13 @@ public class MainModelImpl implements MainContract.Model {
 
             @Override
             public void onSuccess(Object o) {
-                HistoryBean bean = (HistoryBean) o;
-                mOnReturnDataListener.getHistory(bean);
+                DayBean bean = (DayBean) o;
+                mOnReturnDataListener.getDayList(bean);
             }
 
             @Override
             public void onFailed(String e) {
-                mOnReturnDataListener.getFailed(e);
+                mOnReturnDataListener.getDayListError(e);
             }
 
             @Override
@@ -66,5 +65,12 @@ public class MainModelImpl implements MainContract.Model {
                 .subscribe(new MyCallBack(listener) {
                 });
         RxHolder.addSubscription(sub);
+    }
+
+
+
+    @Override
+    public void getServerData() {
+
     }
 }

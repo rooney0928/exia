@@ -20,7 +20,7 @@ package com.lyc.exia.base;
  * View基类
  * @param <T>
  */
-public interface BaseView<T,W> {
+public interface BaseView<W> {
     void updateView(W serverData);
     void updateError(String error);
     void requestStart();

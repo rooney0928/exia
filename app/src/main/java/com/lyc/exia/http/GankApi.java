@@ -14,7 +14,11 @@ import rx.Observable;
 public interface GankApi {
 
     @GET("day/history")
-    Observable<HistoryBean> getWeather();
+    Observable<HistoryBean> getHistory();
+
+    @GET("history/content/{size}/{page}")
+    Observable<DayBean> getDayList(@Path("size") int size,@Path("page") int page);
+
 
     @GET("day/{year}/{month}/{day}")
     Observable<DayBean> getDayData(@Path("year") String year,

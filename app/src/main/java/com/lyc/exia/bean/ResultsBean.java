@@ -2,7 +2,6 @@ package com.lyc.exia.bean;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.List;
  * Created by wayne on 2017/1/6.
  */
 
-public class ResultsBean extends DataSupport {
+public class ResultsBean {
 
     @SerializedName("Android")
     private List<Gank> androidList = new ArrayList<Gank>();

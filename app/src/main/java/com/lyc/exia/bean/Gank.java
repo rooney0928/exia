@@ -1,12 +1,11 @@
 package com.lyc.exia.bean;
 
-import org.litepal.crud.DataSupport;
 
 /**
  * Created by wayne on 2017/1/5.
  */
 
-public class Gank extends DataSupport{
+public class Gank {
 
     /**
      * _id : 56cc6d23421aa95caa707c6f

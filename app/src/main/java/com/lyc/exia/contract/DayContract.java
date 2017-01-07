@@ -11,7 +11,7 @@ import com.lyc.exia.bean.DayBean;
 
 public interface DayContract {
 
-    interface View extends BaseView<Presenter,DayBean> {
+    interface View extends BaseView {
         void getDayData(DayBean dayBean);
         void getDayDataFailed(String error);
         void requestStart();

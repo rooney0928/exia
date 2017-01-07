@@ -1,5 +1,6 @@
 package com.lyc.exia.presenter;
 
+import com.lyc.exia.bean.DayBean;
 import com.lyc.exia.bean.HistoryBean;
 import com.lyc.exia.contract.MainContract;
 import com.lyc.exia.model.MainModelImpl;
@@ -15,16 +16,17 @@ public class MainPresenter implements MainContract.Presenter {
     public MainPresenter(MainContract.View iview) {
         this.view = iview;
         model = new MainModelImpl(new MainModelImpl.OnReturnDataListener() {
+
+
             @Override
-            public void getHistory(HistoryBean bean) {
-                view.getHistory(bean);
+            public void getDayList(DayBean bean) {
+                view.getDayList(bean);
             }
 
             @Override
-            public void getFailed(String error) {
-                view.getHistoryFailed(error);
+            public void getDayListError(String error) {
+                view.getDayListError(error);
             }
-
 
             @Override
             public void requestStart() {
@@ -41,5 +43,10 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void getServerData() {
         model.getServerData();
+    }
+
+    @Override
+    public void getDayList(int size, int page) {
+        model.getDayList(size, page);
     }
 }

@@ -1,12 +1,11 @@
 package com.lyc.exia.bean;
 
-import org.litepal.crud.DataSupport;
 
 /**
  * Created by wayne on 2017/1/5.
  */
 
-public class BaseBean extends DataSupport{
+public class BaseBean{
 
     private boolean error;
 

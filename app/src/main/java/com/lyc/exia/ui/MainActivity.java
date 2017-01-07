@@ -22,8 +22,14 @@ import com.lyc.exia.presenter.MainPresenter;
 import com.lyc.exia.ui.base.ToolBarActivity;
 import com.lyc.exia.utils.ArrayUtil;
 import com.lyc.exia.utils.LogU;
+import com.lyc.exia.utils.ReadAsset;
 import com.lyc.exia.utils.RxHolder;
 import com.lyc.exia.utils.ToastUtil;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +40,9 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends ToolBarActivity implements MainContract.View<HistoryBean, HistoryBean> {
+public class MainActivity extends ToolBarActivity implements MainContract.View {
+    private static int PAGE_SIZE = 15;
+
 
     private MainPresenter mainPresenter;
 
@@ -48,13 +56,13 @@ public class MainActivity extends ToolBarActivity implements MainContract.View<H
     @BindView(R.id.rv_list)
     RecyclerView rv_list;
 
-    int page1 = 1;
+    int page = 1;
     /**
      * 最后可见条目
      */
     protected int lastVisibleItem;
 
-    List<String> dateList;
+    List<DayBean.ResultsBean> dateList;
     DayAdapter adapter;
     StaggeredGridLayoutManager staggeredGridLayoutManager;
     LinearLayoutManager linearLayoutManager;
@@ -79,60 +87,40 @@ public class MainActivity extends ToolBarActivity implements MainContract.View<H
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
 
-        linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 //        GridLayoutManager layoutManager =
 //                new GridLayoutManager(this,2);
-        rv_list.setLayoutManager(linearLayoutManager);
+        rv_list.setLayoutManager(staggeredGridLayoutManager);
         rv_list.setAdapter(adapter);
 
         swipe_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mainPresenter.getServerData();
-
-
+                mainPresenter.getDayList(PAGE_SIZE, 0);
             }
         });
 
-        rv_list.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-//                staggeredGridLayoutManager.invalidateSpanAssignments(); //防止第一行到顶部有空白区域
-
-                if (newState == RecyclerView.SCROLL_STATE_IDLE &&
-                        lastVisibleItem == adapter.getItemCount() - 1 && !isRefresh) {
-                    LogU.t("加载贡多");
-
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
-
-        mainPresenter.getServerData();
+        mainPresenter.getDayList(PAGE_SIZE, 0);
     }
 
+
     @Override
-    public void getHistory(HistoryBean bean) {
-        //刷新列表或初始化
+    public void getDayList(DayBean bean) {
+        //刷新
+        List<DayBean.ResultsBean> dailyBean = bean.getResults();
         dateList.clear();
-        dateList = bean.getResults();
-        adapter.setList(ArrayUtil.getData(dateList, page1, 30));
+        dateList = dailyBean;
+        adapter.setList(dateList);
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void getHistoryFailed(String e) {
-        ToastUtil.showSimpleToast(this, e);
+    public void getDayListError(String error) {
+        ToastUtil.showSimpleToast(this, error);
     }
 
-
     @Override
-    public void updateView(HistoryBean serverData) {
+    public void updateView(Object serverData) {
 
     }
 

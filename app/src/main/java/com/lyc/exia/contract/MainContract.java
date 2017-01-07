@@ -3,6 +3,7 @@ package com.lyc.exia.contract;
 import com.lyc.exia.base.BaseModel;
 import com.lyc.exia.base.BasePresenter;
 import com.lyc.exia.base.BaseView;
+import com.lyc.exia.bean.DayBean;
 import com.lyc.exia.bean.HistoryBean;
 
 /**
@@ -11,17 +12,18 @@ import com.lyc.exia.bean.HistoryBean;
 
 public interface MainContract {
 
-    interface View<A,B> extends BaseView<Presenter,HistoryBean> {
-        void getHistory(A bean);
-        void getHistoryFailed(String error);
+    interface View extends BaseView{
+        void getDayList(DayBean bean);
+        void getDayListError(String error);
         void requestStart();
         void requestEnd();
     }
 
     interface Presenter extends BasePresenter {
+        void getDayList(int size,int page);
     }
 
     interface Model extends BaseModel {
-
+        void getDayList(int size,int page);
     }
 }
