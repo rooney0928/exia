@@ -85,18 +85,12 @@ public class DayAdapter extends RecyclerView.Adapter {
         public void setData() {
             DayBean.ResultsBean bean = list.get(getAdapterPosition());
             String url = getUrlFromHtml(bean.getContent());
-            LogU.t("url--"+url);
             if(!TextUtils.isEmpty(url)){
                 Glide.with(context).load(url).centerCrop().into(iv_header);
             }
             String publish = bean.getPublishedAt();
             String[] dates = publish.split("T");
             tv_title.setText(dates[0] + " " + bean.getTitle());
-
-
-//            if (getAdapterPosition() ==11) {
-//                dayPresenter.requestDayData(dates[0], dates[1], dates[2]);
-//            }
         }
 
     }
@@ -113,10 +107,8 @@ public class DayAdapter extends RecyclerView.Adapter {
 //        }
     }
 
-
     @Override
     public int getItemCount() {
-
         return list == null ? 0 : list.size();
     }
 }

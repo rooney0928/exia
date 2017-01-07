@@ -17,7 +17,6 @@ public class MainPresenter implements MainContract.Presenter {
         this.view = iview;
         model = new MainModelImpl(new MainModelImpl.OnReturnDataListener() {
 
-
             @Override
             public void getDayList(DayBean bean) {
                 view.getDayList(bean);
@@ -26,6 +25,16 @@ public class MainPresenter implements MainContract.Presenter {
             @Override
             public void getDayListError(String error) {
                 view.getDayListError(error);
+            }
+
+            @Override
+            public void getMoreDayList(DayBean bean) {
+                view.getMoreDayList(bean);
+            }
+
+            @Override
+            public void getMoreDayListError(String error) {
+                view.getMoreDayListError(error);
             }
 
             @Override
@@ -48,5 +57,10 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void getDayList(int size, int page) {
         model.getDayList(size, page);
+    }
+
+    @Override
+    public void getMoreDayList(int size, int page) {
+        model.getMoreDayList(size, page);
     }
 }

@@ -20,24 +20,42 @@ import rx.schedulers.Schedulers;
  */
 
 public class MainModelImpl implements MainContract.Model {
-
+    private static int REFRESH = 0;
+    private static int LOAD_MORE = 1;
     private OnReturnDataListener mOnReturnDataListener;
 
     public MainModelImpl(OnReturnDataListener mOnReturnDataListener) {
         this.mOnReturnDataListener = mOnReturnDataListener;
     }
+
     public interface OnReturnDataListener {
         void getDayList(DayBean bean);
+
         void getDayListError(String error);
+
+        void getMoreDayList(DayBean bean);
+
+        void getMoreDayListError(String error);
+
         void requestStart();
+
         void requestEnd();
     }
 
     @Override
     public void getDayList(int size, int page) {
-        Observable<DayBean> request = RxHttp.getDayList(size,page);
+        getDayListModel(REFRESH, size, page);
+    }
 
-        MyCallBack.OnServerListener listener =  new MyCallBack.OnServerListener(){
+    @Override
+    public void getMoreDayList(int size, int page) {
+        getDayListModel(LOAD_MORE, size, page);
+    }
+
+    public void getDayListModel(final int type, int size, int page) {
+        Observable<DayBean> request = RxHttp.getDayList(size, page);
+
+        MyCallBack.OnServerListener listener = new MyCallBack.OnServerListener() {
 
             @Override
             public void onStart() {
@@ -47,12 +65,20 @@ public class MainModelImpl implements MainContract.Model {
             @Override
             public void onSuccess(Object o) {
                 DayBean bean = (DayBean) o;
-                mOnReturnDataListener.getDayList(bean);
+                if(type==REFRESH){
+                    mOnReturnDataListener.getDayList(bean);
+                }else{
+                    mOnReturnDataListener.getMoreDayList(bean);
+                }
             }
 
             @Override
             public void onFailed(String e) {
-                mOnReturnDataListener.getDayListError(e);
+                if (type==REFRESH){
+                    mOnReturnDataListener.getDayListError(e);
+                }else {
+                    mOnReturnDataListener.getMoreDayListError(e);
+                }
             }
 
             @Override
@@ -66,7 +92,6 @@ public class MainModelImpl implements MainContract.Model {
                 });
         RxHolder.addSubscription(sub);
     }
-
 
 
     @Override

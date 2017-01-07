@@ -15,15 +15,19 @@ public interface MainContract {
     interface View extends BaseView{
         void getDayList(DayBean bean);
         void getDayListError(String error);
+        void getMoreDayList(DayBean bean);
+        void getMoreDayListError(String error);
         void requestStart();
         void requestEnd();
     }
 
     interface Presenter extends BasePresenter {
         void getDayList(int size,int page);
+        void getMoreDayList(int size,int page);
     }
 
     interface Model extends BaseModel {
         void getDayList(int size,int page);
+        void getMoreDayList(int size,int page);
     }
 }

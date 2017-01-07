@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">exia</string>
+
+    <string name="scale_up_show_behavior">com.lyc.exia.behavior.ScaleUpShowBehavior</string>
 </resources>
