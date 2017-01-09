@@ -1,9 +1,6 @@
 package com.lyc.exia.model;
 
-import android.util.Log;
-
-import com.lyc.exia.bean.DayBean;
-import com.lyc.exia.bean.HistoryBean;
+import com.lyc.exia.bean.DayListBean;
 import com.lyc.exia.contract.MainContract;
 import com.lyc.exia.http.MyCallBack;
 import com.lyc.exia.http.RxHttp;
@@ -12,7 +9,6 @@ import com.lyc.exia.utils.RxHolder;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -29,11 +25,11 @@ public class MainModelImpl implements MainContract.Model {
     }
 
     public interface OnReturnDataListener {
-        void getDayList(DayBean bean);
+        void getDayList(DayListBean bean);
 
         void getDayListError(String error);
 
-        void getMoreDayList(DayBean bean);
+        void getMoreDayList(DayListBean bean);
 
         void getMoreDayListError(String error);
 
@@ -53,7 +49,7 @@ public class MainModelImpl implements MainContract.Model {
     }
 
     public void getDayListModel(final int type, int size, int page) {
-        Observable<DayBean> request = RxHttp.getDayList(size, page);
+        Observable<DayListBean> request = RxHttp.getDayList(size, page);
 
         MyCallBack.OnServerListener listener = new MyCallBack.OnServerListener() {
 
@@ -64,7 +60,7 @@ public class MainModelImpl implements MainContract.Model {
 
             @Override
             public void onSuccess(Object o) {
-                DayBean bean = (DayBean) o;
+                DayListBean bean = (DayListBean) o;
                 if(type==REFRESH){
                     mOnReturnDataListener.getDayList(bean);
                 }else{

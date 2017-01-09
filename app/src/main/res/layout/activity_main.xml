@@ -26,5 +26,6 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:src="@mipmap/icon_up"
+        android:visibility="gone"
         app:layout_scrollFlags="scroll|enterAlways|snap" />
 </android.support.design.widget.CoordinatorLayout>

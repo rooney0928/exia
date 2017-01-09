@@ -5,7 +5,7 @@
     <version value="2"></version>
 
     <list>
-        <mapping class="com.lyc.exia.bean.DayBean"></mapping>
+        <mapping class="com.lyc.exia.bean.DayListBean"></mapping>
         <mapping class="com.lyc.exia.bean.Gank"></mapping>
     </list>
 </litepal>

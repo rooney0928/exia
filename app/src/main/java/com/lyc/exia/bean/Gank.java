@@ -5,7 +5,7 @@ package com.lyc.exia.bean;
  * Created by wayne on 2017/1/5.
  */
 
-public class Gank {
+public class Gank{
 
     /**
      * _id : 56cc6d23421aa95caa707c6f

@@ -1,7 +1,6 @@
 package com.lyc.exia.presenter;
 
-import com.lyc.exia.bean.DayBean;
-import com.lyc.exia.bean.HistoryBean;
+import com.lyc.exia.bean.DayListBean;
 import com.lyc.exia.contract.MainContract;
 import com.lyc.exia.model.MainModelImpl;
 
@@ -18,7 +17,7 @@ public class MainPresenter implements MainContract.Presenter {
         model = new MainModelImpl(new MainModelImpl.OnReturnDataListener() {
 
             @Override
-            public void getDayList(DayBean bean) {
+            public void getDayList(DayListBean bean) {
                 view.getDayList(bean);
             }
 
@@ -28,7 +27,7 @@ public class MainPresenter implements MainContract.Presenter {
             }
 
             @Override
-            public void getMoreDayList(DayBean bean) {
+            public void getMoreDayList(DayListBean bean) {
                 view.getMoreDayList(bean);
             }
 

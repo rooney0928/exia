@@ -1,23 +1,21 @@
 package com.lyc.exia.presenter;
 
-import android.util.Log;
-
 import com.lyc.exia.bean.DayBean;
-import com.lyc.exia.contract.DayContract;
-import com.lyc.exia.model.DayModelImpl;
+import com.lyc.exia.contract.GankContract;
+import com.lyc.exia.model.GankModelImpl;
 
 /**
  * Created by wayne on 2017/1/6.
  */
 
-public class DayPresenter implements DayContract.Presenter {
-    private DayContract.View view;
-    private DayContract.Model model;
+public class GankPresenter implements GankContract.Presenter {
+    private GankContract.View view;
+    private GankContract.Model model;
 
-    public DayPresenter(DayContract.View iview) {
+    public GankPresenter(GankContract.View iview) {
         this.view = iview;
 
-        model = new DayModelImpl(new DayModelImpl.OnReturnDataListener() {
+        model = new GankModelImpl(new GankModelImpl.OnReturnDataListener() {
             @Override
             public void getDayData(DayBean bean) {
                 view.getDayData(bean);

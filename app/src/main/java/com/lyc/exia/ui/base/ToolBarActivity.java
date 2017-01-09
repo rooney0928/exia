@@ -26,13 +26,10 @@ public abstract class ToolBarActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
-    protected boolean mIsHidden = false;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(provideContentViewId());
-        ButterKnife.bind(this);
         setView();
     }
 }

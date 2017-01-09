@@ -1,6 +1,7 @@
 package com.lyc.exia.http;
 
 import com.lyc.exia.bean.DayBean;
+import com.lyc.exia.bean.DayListBean;
 import com.lyc.exia.bean.HistoryBean;
 
 import retrofit2.Retrofit;
@@ -37,7 +38,7 @@ public class RxHttp {
      * @param page
      * @return
      */
-    public static Observable<DayBean> getDayList(int size, int page) {
+    public static Observable<DayListBean> getDayList(int size, int page) {
         return gankApi.getDayList(size, page);
     }
 

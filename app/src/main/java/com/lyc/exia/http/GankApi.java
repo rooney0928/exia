@@ -1,6 +1,7 @@
 package com.lyc.exia.http;
 
 import com.lyc.exia.bean.DayBean;
+import com.lyc.exia.bean.DayListBean;
 import com.lyc.exia.bean.HistoryBean;
 
 import retrofit2.http.GET;
@@ -17,7 +18,7 @@ public interface GankApi {
     Observable<HistoryBean> getHistory();
 
     @GET("history/content/{size}/{page}")
-    Observable<DayBean> getDayList(@Path("size") int size,@Path("page") int page);
+    Observable<DayListBean> getDayList(@Path("size") int size, @Path("page") int page);
 
 
     @GET("day/{year}/{month}/{day}")

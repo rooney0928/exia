@@ -1,11 +1,9 @@
 package com.lyc.exia.ui;
 
-import android.os.Handler;
 import android.os.SystemClock;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,12 +17,16 @@ import android.view.View;
 import com.lyc.exia.R;
 import com.lyc.exia.adapter.DayAdapter;
 import com.lyc.exia.bean.DayBean;
+import com.lyc.exia.bean.DayListBean;
 import com.lyc.exia.contract.MainContract;
+import com.lyc.exia.http.MyCallBack;
+import com.lyc.exia.http.RxHttp;
 import com.lyc.exia.presenter.MainPresenter;
 import com.lyc.exia.ui.base.ToolBarActivity;
-import com.lyc.exia.utils.AnimatorUtil;
 import com.lyc.exia.utils.CommUtil;
 import com.lyc.exia.utils.LogU;
+import com.lyc.exia.utils.NetworkUtils;
+import com.lyc.exia.utils.RxHolder;
 import com.lyc.exia.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -32,8 +34,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends ToolBarActivity implements MainContract.View {
     private static int PAGE_SIZE = 15;
@@ -59,7 +65,7 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
      */
     protected int lastVisibleItem;
 
-    List<DayBean.ResultsBean> dateList;
+    List<DayListBean.ResultsBean> dateList;
     DayAdapter adapter;
     StaggeredGridLayoutManager staggeredGridLayoutManager;
     LinearLayoutManager linearLayoutManager;
@@ -72,27 +78,30 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
         return R.layout.activity_main;
     }
 
+    View.OnClickListener closeListener = new View.OnClickListener() {
+        long[] mHits = new long[2];
+        private final static int N_CLAP_TIME = 2 * 1000;
+
+        @Override
+        public void onClick(View v) {
+            System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
+            // 将最后一个位置更新为距离开机的时间，如果最后一个时间和最开始时间小于2000，即n击
+            mHits[mHits.length - 1] = SystemClock.uptimeMillis();
+            if (N_CLAP_TIME >= (mHits[mHits.length - 1] - mHits[0])) {
+                staggeredGridLayoutManager.scrollToPosition(0);
+            }
+        }
+    };
 
     @Override
     protected void setView() {
+        ButterKnife.bind(this);
         mainPresenter = new MainPresenter(this);
         adapter = new DayAdapter(this);
         dateList = new ArrayList<>();
 
         toolbar.setTitle(R.string.app_name);
-        toolbar.setOnClickListener(new View.OnClickListener() {
-            long[] mHits = new long[2];
-            private final static int N_CLAP_TIME = 2*1000;
-            @Override
-            public void onClick(View v) {
-                System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
-                // 将最后一个位置更新为距离开机的时间，如果最后一个时间和最开始时间小于2000，即n击
-                mHits[mHits.length - 1] = SystemClock.uptimeMillis();
-                if ( N_CLAP_TIME >= (mHits[mHits.length - 1] - mHits[0])  ) {
-                    staggeredGridLayoutManager.scrollToPosition(0);
-                }
-            }
-        });
+        toolbar.setOnClickListener(closeListener);
         setSupportActionBar(toolbar);
 
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -114,7 +123,11 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
                 if (isRefresh) {
                     return;
                 }
-                mainPresenter.getDayList(PAGE_SIZE, 0);
+                if (NetworkUtils.checkNetwork(MainActivity.this)) {
+                    mainPresenter.getDayList(PAGE_SIZE, 0);
+                }else{
+                    swipe_layout.setRefreshing(false);
+                }
             }
         });
         int pink_dark = ContextCompat.getColor(this, R.color.pink_dark);
@@ -142,8 +155,10 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
                     // 判断是否滚动到底部
                     if (lastVisiblePos == (totalItemCount - 1) && isSlidingToLast) {
                         //加载更多功能的代码
-                        swipe_layout.setRefreshing(true);
-                        mainPresenter.getMoreDayList(PAGE_SIZE, ++page);
+                        if (NetworkUtils.checkNetwork(MainActivity.this)) {
+                            swipe_layout.setRefreshing(true);
+                            mainPresenter.getMoreDayList(PAGE_SIZE, ++page);
+                        }
                     }
                 }
 
@@ -170,14 +185,18 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
 
             }
         });
-        mainPresenter.getDayList(PAGE_SIZE, 0);
+
+        if (NetworkUtils.checkNetwork(this)) {
+            mainPresenter.getDayList(PAGE_SIZE, 0);
+        }
+
     }
 
 
     @Override
-    public void getDayList(DayBean bean) {
+    public void getDayList(DayListBean bean) {
         //刷新
-        List<DayBean.ResultsBean> dailyBean = bean.getResults();
+        List<DayListBean.ResultsBean> dailyBean = bean.getResults();
         dateList.clear();
         dateList = dailyBean;
         adapter.setList(dateList);
@@ -190,9 +209,9 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
     }
 
     @Override
-    public void getMoreDayList(DayBean bean) {
+    public void getMoreDayList(DayListBean bean) {
         //加载更多
-        List<DayBean.ResultsBean> dailyBean = bean.getResults();
+        List<DayListBean.ResultsBean> dailyBean = bean.getResults();
         if (dailyBean.size() > 0) {
             dateList.addAll(dailyBean);
             adapter.setList(dateList);
@@ -261,44 +280,18 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
         return true;
     }
 
-//    private boolean isInitializeFAB = false;
+    private long mPressedTime = 0;
 
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        super.onWindowFocusChanged(hasFocus);
-//        if (!isInitializeFAB) {
-//            isInitializeFAB = true;
-//            hideFAB();
-//        }
-//    }
-
-
-    private void hideFAB() {
-        Observable.timer(500, TimeUnit.MILLISECONDS).subscribe(
-                new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                AnimatorUtil.scaleHide(fab_up, new ViewPropertyAnimatorListener() {
-                                    @Override
-                                    public void onAnimationStart(View view) {
-                                    }
-
-                                    @Override
-                                    public void onAnimationEnd(View view) {
-                                        fab_up.setVisibility(View.GONE);
-                                    }
-
-                                    @Override
-                                    public void onAnimationCancel(View view) {
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }
-        );
+    @Override
+    public void onBackPressed() {
+        long mNowTime = System.currentTimeMillis();//获取第一次按键时间
+        if ((mNowTime - mPressedTime) > 2000) {//比较两次按键时间差
+            ToastUtil.showSimpleToast(this, "再按一次退出程序");
+            mPressedTime = mNowTime;
+        } else {
+            //退出程序
+            finish();
+            System.exit(0);
+        }
     }
 }

@@ -1,10 +1,7 @@
 package com.lyc.exia.model;
 
-import android.util.Log;
-
 import com.lyc.exia.bean.DayBean;
-import com.lyc.exia.bean.HistoryBean;
-import com.lyc.exia.contract.DayContract;
+import com.lyc.exia.contract.GankContract;
 import com.lyc.exia.http.MyCallBack;
 import com.lyc.exia.http.RxHttp;
 import com.lyc.exia.utils.LogU;
@@ -19,11 +16,11 @@ import rx.schedulers.Schedulers;
  * Created by wayne on 2017/1/6.
  */
 
-public class DayModelImpl implements DayContract.Model{
+public class GankModelImpl implements GankContract.Model{
 
     private OnReturnDataListener mOnReturnDataListener;
 
-    public DayModelImpl(OnReturnDataListener mOnReturnDataListener) {
+    public GankModelImpl(OnReturnDataListener mOnReturnDataListener) {
         this.mOnReturnDataListener = mOnReturnDataListener;
     }
 

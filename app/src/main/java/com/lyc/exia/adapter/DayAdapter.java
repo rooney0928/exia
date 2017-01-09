@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,19 +12,16 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.lyc.exia.R;
-import com.lyc.exia.bean.DayBean;
-import com.lyc.exia.contract.DayContract;
-import com.lyc.exia.presenter.DayPresenter;
-import com.lyc.exia.utils.LogU;
+import com.lyc.exia.bean.DayListBean;
+import com.lyc.exia.presenter.GankPresenter;
+import com.lyc.exia.ui.GankActivity;
 import com.lyc.exia.utils.ToastUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by wayne on 2017/1/6.
@@ -33,13 +29,13 @@ import java.util.Random;
 
 public class DayAdapter extends RecyclerView.Adapter {
     private Context context;
-    private List<DayBean.ResultsBean> list;
+    private List<DayListBean.ResultsBean> list;
 
     public DayAdapter(Context context) {
         this.context = context;
     }
 
-    public void setList(List<DayBean.ResultsBean> list) {
+    public void setList(List<DayListBean.ResultsBean> list) {
         this.list = list;
     }
 
@@ -54,6 +50,9 @@ public class DayAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View v) {
                 ToastUtil.showSimpleToast(context, "this is " + holder.getAdapterPosition());
+                DayListBean.ResultsBean bean = list.get(holder.getAdapterPosition());
+                String[] dates = bean.getPublishedAt().split("T");
+                GankActivity.actionStart(context,dates[0]);
             }
         });
         return holder;
@@ -69,7 +68,6 @@ public class DayAdapter extends RecyclerView.Adapter {
     }
 
     class DayHolder extends RecyclerView.ViewHolder {
-        DayPresenter dayPresenter;
         CardView cardView;
         ImageView iv_header;
         TextView tv_title;
@@ -83,7 +81,7 @@ public class DayAdapter extends RecyclerView.Adapter {
         }
 
         public void setData() {
-            DayBean.ResultsBean bean = list.get(getAdapterPosition());
+            DayListBean.ResultsBean bean = list.get(getAdapterPosition());
             String url = getUrlFromHtml(bean.getContent());
             if(!TextUtils.isEmpty(url)){
                 Glide.with(context).load(url).centerCrop().into(iv_header);
@@ -100,11 +98,6 @@ public class DayAdapter extends RecyclerView.Adapter {
         Document doc = Jsoup.parse(content);
         Element pic = doc.getElementsByTag("img").first();
         return pic.attr("src");
-//        Elements pEles = doc.getElementsByTag("p");
-//        for (int i = 0; i < pEles.size(); i++) {
-//            Element p = pEles.get(i);
-//
-//        }
     }
 
     @Override

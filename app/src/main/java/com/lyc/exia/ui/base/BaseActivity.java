@@ -16,12 +16,13 @@ import rx.subscriptions.CompositeSubscription;
 public abstract class BaseActivity extends AppCompatActivity {
 
     abstract protected int provideContentViewId();
-
+    protected abstract void setView();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(provideContentViewId());
+        setView();
     }
 
 

@@ -4,12 +4,13 @@ import com.lyc.exia.base.BaseModel;
 import com.lyc.exia.base.BasePresenter;
 import com.lyc.exia.base.BaseView;
 import com.lyc.exia.bean.DayBean;
+import com.lyc.exia.bean.DayListBean;
 
 /**
  * Created by wayne on 2017/1/6.
  */
 
-public interface DayContract {
+public interface GankContract {
 
     interface View extends BaseView {
         void getDayData(DayBean dayBean);
