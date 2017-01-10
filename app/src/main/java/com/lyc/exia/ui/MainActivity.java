@@ -1,5 +1,6 @@
 package com.lyc.exia.ui;
 
+import android.app.ProgressDialog;
 import android.os.SystemClock;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +27,7 @@ import com.lyc.exia.ui.base.ToolBarActivity;
 import com.lyc.exia.utils.CommUtil;
 import com.lyc.exia.utils.LogU;
 import com.lyc.exia.utils.NetworkUtils;
+import com.lyc.exia.utils.ProgressBarUtil;
 import com.lyc.exia.utils.RxHolder;
 import com.lyc.exia.utils.ToastUtil;
 
@@ -239,6 +241,7 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
     @Override
     public void requestStart() {
         isRefresh = true;
+        ProgressBarUtil.showLoadDialog(this);
     }
 
     @Override
@@ -261,6 +264,7 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
 
         }
         isRefresh = false;
+        ProgressBarUtil.hideLoadDialog();
     }
 
 
@@ -293,5 +297,11 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
             finish();
             System.exit(0);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RxHolder.unSubscribe();
     }
 }

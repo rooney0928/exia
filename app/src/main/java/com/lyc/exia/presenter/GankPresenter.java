@@ -3,6 +3,7 @@ package com.lyc.exia.presenter;
 import com.lyc.exia.bean.DayBean;
 import com.lyc.exia.contract.GankContract;
 import com.lyc.exia.model.GankModelImpl;
+import com.lyc.exia.utils.LogU;
 
 /**
  * Created by wayne on 2017/1/6.

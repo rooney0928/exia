@@ -34,7 +34,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         /**
          * 防止context泄露
          */
-        RxHolder.unSubscribe();
+//        RxHolder.unSubscribe();
     }
 
 }

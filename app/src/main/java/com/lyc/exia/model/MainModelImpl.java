@@ -49,7 +49,8 @@ public class MainModelImpl implements MainContract.Model {
     }
 
     public void getDayListModel(final int type, int size, int page) {
-        Observable<DayListBean> request = RxHttp.getDayList(size, page);
+        RxHttp rxHttp = new RxHttp();
+        Observable<DayListBean> request = rxHttp.getDayList(size, page);
 
         MyCallBack.OnServerListener listener = new MyCallBack.OnServerListener() {
 
