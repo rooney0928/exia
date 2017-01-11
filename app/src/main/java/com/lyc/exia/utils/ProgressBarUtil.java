@@ -12,7 +12,7 @@ public class ProgressBarUtil {
 
     public static void showLoadDialog(Context context) {
         if (dialog == null || !dialog.isShowing()) {
-            dialog = ProgressDialog.show(context, "请注意", "正在加载中");
+            dialog = ProgressDialog.show(context, "提示", "正努力加载中");
         }
         dialog.show();
     }

@@ -1,11 +1,8 @@
 package com.lyc.exia.http;
 
-import android.util.Log;
-
-import com.lyc.exia.bean.BaseBean;
+import com.lyc.exia.bean.Response;
 import com.lyc.exia.utils.LogU;
 
-import rx.Observer;
 import rx.Subscriber;
 
 /**
@@ -36,21 +33,23 @@ public abstract class MyCallBack extends Subscriber {
 
     @Override
     public void onCompleted() {
-        onReturnListener.onFinish();
+//        onReturnListener.onFinish();
     }
 
     @Override
     public void onError(Throwable e) {
         LogU.t("error?--"+e);
         onReturnListener.onFailed(e.getMessage());
+        onReturnListener.onFinish();
     }
 
     @Override
     public void onNext(Object o) {
-        BaseBean baseBean = (BaseBean) o;
-        LogU.t("ok--"+baseBean.isError());
-        if(!baseBean.isError()){
+        Response response = (Response) o;
+        LogU.t("ok--"+ response.error);
+        if(!response.error){
             onReturnListener.onSuccess(o);
         }
+        onReturnListener.onFinish();
     }
 }

@@ -4,21 +4,31 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.lyc.exia.R;
-import com.lyc.exia.bean.BaseBean;
+import com.lyc.exia.adapter.GankAdapter;
 import com.lyc.exia.bean.DayBean;
+import com.lyc.exia.bean.Gank;
 import com.lyc.exia.contract.GankContract;
 import com.lyc.exia.presenter.GankPresenter;
 import com.lyc.exia.ui.base.BaseActivity;
-import com.lyc.exia.utils.LogU;
+import com.lyc.exia.utils.ProgressBarUtil;
 import com.lyc.exia.utils.ToastUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * Created by wayne on 2017/1/10.
@@ -33,6 +43,12 @@ public class GankActivity extends BaseActivity implements GankContract.View{
     CollapsingToolbarLayout coll_toolbar;
     @BindView(R.id.iv_title_img)
     ImageView iv_title_img;
+    @BindView(R.id.rv_ganks)
+    RecyclerView rv_ganks;
+
+
+    private GankAdapter adapter;
+    LinearLayoutManager linearLayoutManager;
 
     public static void actionStart(Context context, String date) {
         Intent intent = new Intent(context, GankActivity.class);
@@ -50,12 +66,23 @@ public class GankActivity extends BaseActivity implements GankContract.View{
     protected void setView() {
         ButterKnife.bind(this);
         gankPresenter = new GankPresenter(this);
+        adapter = new GankAdapter(this);
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        linearLayoutManager.setSmoothScrollbarEnabled(true);
+        linearLayoutManager.setAutoMeasureEnabled(true);
+
+        rv_ganks.setLayoutManager(linearLayoutManager);
+        rv_ganks.setHasFixedSize(true);
+        rv_ganks.setNestedScrollingEnabled(false);
+        rv_ganks.setAdapter(adapter);
+        rv_ganks.setNestedScrollingEnabled(false);
+
         Intent intent = getIntent();
         String date = intent.getStringExtra("date");
         String[] dates = date.split("-");
         gankPresenter.requestDayData(dates[0],dates[1],dates[2]);
 
-
+        toolbar.setTitle(date+"力推");
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -65,14 +92,22 @@ public class GankActivity extends BaseActivity implements GankContract.View{
 
     @Override
     public void getDayData(DayBean dayBean) {
-        ToastUtil.showSimpleToast(this,dayBean.toString());
-
+        //福利部分
         if(dayBean.getResults().benefitList!=null&&dayBean.getResults().benefitList.size()>0){
             Glide.with(this)
                     .load(dayBean.getResults().benefitList.get(0).getUrl())
                     .centerCrop()
                     .into(iv_title_img);
         }
+
+        //代码分享
+        List<List<Gank>> ganks = new ArrayList<>();
+        ganks.add(dayBean.getResults().iosList);
+        ganks.add(dayBean.getResults().androidList);
+        ganks.add(dayBean.getResults().relaxList);
+        adapter.setList(ganks);
+        adapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -92,11 +127,33 @@ public class GankActivity extends BaseActivity implements GankContract.View{
 
     @Override
     public void requestStart() {
-
+        ProgressBarUtil.showLoadDialog(this);
     }
 
     @Override
     public void requestEnd() {
-
+        Observable.timer(400, TimeUnit.MILLISECONDS).subscribe(
+                new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ProgressBarUtil.hideLoadDialog();
+                            }
+                        });
+                    }
+                }
+        );
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return true;
+    }
+
 }

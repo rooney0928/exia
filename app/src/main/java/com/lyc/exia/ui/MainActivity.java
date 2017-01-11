@@ -207,7 +207,7 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
 
     @Override
     public void getDayListError(String error) {
-        ToastUtil.showSimpleToast(this, error);
+        ToastUtil.showSimpleToast(this, "error:"+error);
     }
 
     @Override
@@ -241,7 +241,8 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
     @Override
     public void requestStart() {
         isRefresh = true;
-        ProgressBarUtil.showLoadDialog(this);
+        swipe_layout.setRefreshing(true);
+//        ProgressBarUtil.showLoadDialog(this);
     }
 
     @Override
@@ -264,7 +265,7 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
 
         }
         isRefresh = false;
-        ProgressBarUtil.hideLoadDialog();
+//        ProgressBarUtil.hideLoadDialog();
     }
 
 

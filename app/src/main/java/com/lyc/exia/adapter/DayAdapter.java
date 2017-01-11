@@ -46,6 +46,7 @@ public class DayAdapter extends RecyclerView.Adapter {
         }
         View view = LayoutInflater.from(context).inflate(R.layout.item_day, parent, false);
         final DayHolder holder = new DayHolder(view);
+
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

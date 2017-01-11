@@ -8,7 +8,7 @@ import java.util.List;
  * Created by wayne on 2017/1/10.
  */
 
-public class DayBean extends BaseBean{
+public class DayBean extends Response {
 
     /**
      * category : ["iOS","Android","瞎推荐","拓展资源","福利","休息视频"]

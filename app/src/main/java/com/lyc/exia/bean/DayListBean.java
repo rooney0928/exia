@@ -7,7 +7,7 @@ import java.util.List;
  * Created by wayne on 2017/1/6.
  */
 
-public class DayListBean extends BaseBean{
+public class DayListBean extends Response {
 
 
     private List<ResultsBean> results;

@@ -6,7 +6,7 @@ import java.util.List;
  * Created by wayne on 2017/1/5.
  */
 
-public class HistoryBean extends BaseBean {
+public class HistoryBean extends Response {
 
     /**
      * error : false

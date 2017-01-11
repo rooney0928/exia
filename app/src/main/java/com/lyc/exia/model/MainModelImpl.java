@@ -2,8 +2,10 @@ package com.lyc.exia.model;
 
 import com.lyc.exia.bean.DayListBean;
 import com.lyc.exia.contract.MainContract;
+import com.lyc.exia.http.ApiException;
 import com.lyc.exia.http.MyCallBack;
 import com.lyc.exia.http.RxHttp;
+import com.lyc.exia.http.RxSubscriber;
 import com.lyc.exia.utils.RxHolder;
 
 import rx.Observable;
@@ -49,8 +51,8 @@ public class MainModelImpl implements MainContract.Model {
     }
 
     public void getDayListModel(final int type, int size, int page) {
-        RxHttp rxHttp = new RxHttp();
-        Observable<DayListBean> request = rxHttp.getDayList(size, page);
+
+        Observable<DayListBean> request = RxHttp.getInstance().getDayList(size, page);
 
         MyCallBack.OnServerListener listener = new MyCallBack.OnServerListener() {
 
@@ -83,9 +85,40 @@ public class MainModelImpl implements MainContract.Model {
                 mOnReturnDataListener.requestEnd();
             }
         };
+        new MyCallBack(listener) {
+        };
         Subscription sub = request.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new MyCallBack(listener) {
+                .subscribe(new RxSubscriber<DayListBean>() {
+                    @Override
+                    public void onStart() {
+                        super.onStart();
+                        mOnReturnDataListener.requestStart();
+                    }
+
+                    @Override
+                    protected void onError(ApiException ex) {
+                        if (type==REFRESH){
+                            mOnReturnDataListener.getDayListError(ex.getMessage());
+                        }else {
+                            mOnReturnDataListener.getMoreDayListError(ex.getMessage());
+                        }
+                    }
+
+                    @Override
+                    protected void onOk(DayListBean dayListBean) {
+                        if(type==REFRESH){
+                            mOnReturnDataListener.getDayList(dayListBean);
+                        }else{
+                            mOnReturnDataListener.getMoreDayList(dayListBean);
+                        }
+                    }
+
+                    @Override
+                    protected void requestEnd() {
+                        mOnReturnDataListener.requestEnd();
+                    }
+
                 });
         RxHolder.addSubscription(sub);
     }

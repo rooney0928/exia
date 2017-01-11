@@ -18,7 +18,6 @@ package com.lyc.exia.base;
 
 /**
  * View基类
- * @param <T>
  */
 public interface BaseView<W> {
     void updateView(W serverData);
