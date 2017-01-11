@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -15,9 +18,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.lyc.exia.R;
@@ -129,8 +134,53 @@ public class GankActivity extends BaseActivity implements GankContract.View {
 //                intent.putExtra(Intent.EXTRA_TEXT, "I have successfully share my message through my app");
 //                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                startActivity(Intent.createChooser(intent, getTitle()));
+                openShareDialog();
             }
         });
+    }
+    LinearLayout ll_share_wechat;
+    LinearLayout ll_share_friend;
+    LinearLayout ll_share_qq;
+    LinearLayout ll_share_browser;
+    LinearLayout ll_share_copy;
+
+    private void openShareDialog() {
+        final BottomSheetDialog bsd = new BottomSheetDialog(this);
+        View view = View.inflate(this, R.layout.share_layout, null);
+        View.OnClickListener clickListener = new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.ll_share_wechat:
+                        break;
+                    case R.id.ll_share_friend:
+                        break;
+                    case R.id.ll_share_qq:
+                        break;
+                    case R.id.ll_share_browser:
+                        break;
+                    case R.id.ll_share_copy:
+                        break;
+                }
+                bsd.dismiss();
+            }
+        };
+        view.findViewById(R.id.ll_share_wechat).setOnClickListener(clickListener);
+        view.findViewById(R.id.ll_share_friend).setOnClickListener(clickListener);
+        view.findViewById(R.id.ll_share_qq).setOnClickListener(clickListener);
+        view.findViewById(R.id.ll_share_browser).setOnClickListener(clickListener);
+        view.findViewById(R.id.ll_share_copy).setOnClickListener(clickListener);
+
+        bsd.setContentView(view);
+        View parent = (View) view.getParent();
+        BottomSheetBehavior behavior = BottomSheetBehavior.from(parent);
+        view.measure(0,0);
+        behavior.setPeekHeight(view.getMeasuredHeight());
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) parent.getLayoutParams();
+        params.gravity = Gravity.TOP| Gravity.CENTER_HORIZONTAL;
+        parent.setLayoutParams(params);
+        bsd.show();
     }
 
     @Override
