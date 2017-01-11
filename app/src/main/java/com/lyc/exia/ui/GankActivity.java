@@ -2,12 +2,21 @@ package com.lyc.exia.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -20,6 +29,7 @@ import com.lyc.exia.presenter.GankPresenter;
 import com.lyc.exia.ui.base.BaseActivity;
 import com.lyc.exia.utils.ProgressBarUtil;
 import com.lyc.exia.utils.ToastUtil;
+import com.lyc.exia.view.ScrollLinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +44,7 @@ import rx.functions.Action1;
  * Created by wayne on 2017/1/10.
  */
 
-public class GankActivity extends BaseActivity implements GankContract.View{
+public class GankActivity extends BaseActivity implements GankContract.View {
 
     private GankPresenter gankPresenter;
     @BindView(R.id.toolbar)
@@ -45,10 +55,12 @@ public class GankActivity extends BaseActivity implements GankContract.View{
     ImageView iv_title_img;
     @BindView(R.id.rv_ganks)
     RecyclerView rv_ganks;
+    @BindView(R.id.fab_share)
+    FloatingActionButton fab_share;
 
 
     private GankAdapter adapter;
-    LinearLayoutManager linearLayoutManager;
+    ScrollLinearLayoutManager linearLayoutManager;
 
     public static void actionStart(Context context, String date) {
         Intent intent = new Intent(context, GankActivity.class);
@@ -62,12 +74,13 @@ public class GankActivity extends BaseActivity implements GankContract.View{
         return R.layout.activity_gank;
     }
 
+
     @Override
     protected void setView() {
         ButterKnife.bind(this);
         gankPresenter = new GankPresenter(this);
         adapter = new GankAdapter(this);
-        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        linearLayoutManager = new ScrollLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         linearLayoutManager.setSmoothScrollbarEnabled(true);
         linearLayoutManager.setAutoMeasureEnabled(true);
 
@@ -75,25 +88,25 @@ public class GankActivity extends BaseActivity implements GankContract.View{
         rv_ganks.setHasFixedSize(true);
         rv_ganks.setNestedScrollingEnabled(false);
         rv_ganks.setAdapter(adapter);
-        rv_ganks.setNestedScrollingEnabled(false);
 
         Intent intent = getIntent();
         String date = intent.getStringExtra("date");
         String[] dates = date.split("-");
-        gankPresenter.requestDayData(dates[0],dates[1],dates[2]);
+        gankPresenter.requestDayData(dates[0], dates[1], dates[2]);
 
-        toolbar.setTitle(date+"力推");
+        toolbar.setTitle(date);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
     }
 
     @Override
     public void getDayData(DayBean dayBean) {
         //福利部分
-        if(dayBean.getResults().benefitList!=null&&dayBean.getResults().benefitList.size()>0){
+        if (dayBean.getResults().benefitList != null && dayBean.getResults().benefitList.size() > 0) {
             Glide.with(this)
                     .load(dayBean.getResults().benefitList.get(0).getUrl())
                     .centerCrop()
@@ -107,7 +120,17 @@ public class GankActivity extends BaseActivity implements GankContract.View{
         ganks.add(dayBean.getResults().relaxList);
         adapter.setList(ganks);
         adapter.notifyDataSetChanged();
-
+        fab_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent intent=new Intent(Intent.ACTION_SEND);
+//                intent.setType("image/*");
+//                intent.putExtra(Intent.EXTRA_SUBJECT, "Share");
+//                intent.putExtra(Intent.EXTRA_TEXT, "I have successfully share my message through my app");
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(Intent.createChooser(intent, getTitle()));
+            }
+        });
     }
 
     @Override
@@ -146,9 +169,10 @@ public class GankActivity extends BaseActivity implements GankContract.View{
                 }
         );
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;
