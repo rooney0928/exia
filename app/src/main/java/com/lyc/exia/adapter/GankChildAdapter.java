@@ -8,6 +8,7 @@ import android.text.style.TextAppearanceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lyc.exia.R;
@@ -48,18 +49,21 @@ public class GankChildAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if(holder instanceof GankChildHolder){
-            GankChildHolder gankChildHolder = (GankChildHolder) holder;
+            final GankChildHolder gankChildHolder = (GankChildHolder) holder;
             gankChildHolder.setData();
-            gankChildHolder.tv_tech_child_content.setOnClickListener(new View.OnClickListener() {
+            gankChildHolder.ll_tech_child_layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ToastUtil.showSimpleToast(context,v.toString());
+                    Gank g = list.get(gankChildHolder.getAdapterPosition());
+
                 }
             });
         }
     }
 
     class GankChildHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.ll_tech_child_layout)
+        LinearLayout ll_tech_child_layout;
         @BindView(R.id.tv_tech_child_content)
         TextView tv_tech_child_content;
 

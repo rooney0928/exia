@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="42dp"
     android:gravity="start"
+    android:id="@+id/ll_tech_child_layout"
+    android:background="@drawable/item_bg"
     android:orientation="horizontal">
 
     <TextView
@@ -11,10 +13,10 @@
         android:text="* " />
 
     <TextView
+
         android:id="@+id/tv_tech_child_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/item_bg"
         android:ellipsize="end"
         android:maxLines="2" />
 

@@ -1,5 +1,7 @@
 package com.lyc.exia.utils;
 
+import com.lyc.exia.base.MyApplication;
+
 /**
  * Created by wayne on 2017/1/8.
  */
@@ -15,5 +17,14 @@ public class CommUtil {
                 maxVal = arr[i];
         }
         return maxVal;
+    }
+
+    /**
+     * 获取资源文件 String
+     * @param id
+     * @return
+     */
+    public static String getResourcesString(int id) {
+        return MyApplication.context.getResources().getString(id);
     }
 }

@@ -2,19 +2,12 @@ package com.lyc.exia.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -22,7 +15,6 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.lyc.exia.R;
@@ -109,15 +101,20 @@ public class GankActivity extends BaseActivity implements GankContract.View {
     }
 
     @Override
-    public void getDayData(DayBean dayBean) {
+    public void getDayData(final DayBean dayBean) {
         //福利部分
         if (dayBean.getResults().benefitList != null && dayBean.getResults().benefitList.size() > 0) {
             Glide.with(this)
                     .load(dayBean.getResults().benefitList.get(0).getUrl())
                     .centerCrop()
                     .into(iv_title_img);
+            iv_title_img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ImageActivity.actionStart(GankActivity.this,dayBean.getResults().benefitList.get(0).getUrl());
+                }
+            });
         }
-
         //代码分享
         List<List<Gank>> ganks = new ArrayList<>();
         ganks.add(dayBean.getResults().iosList);
@@ -138,11 +135,6 @@ public class GankActivity extends BaseActivity implements GankContract.View {
             }
         });
     }
-    LinearLayout ll_share_wechat;
-    LinearLayout ll_share_friend;
-    LinearLayout ll_share_qq;
-    LinearLayout ll_share_browser;
-    LinearLayout ll_share_copy;
 
     private void openShareDialog() {
         final BottomSheetDialog bsd = new BottomSheetDialog(this);
@@ -158,6 +150,8 @@ public class GankActivity extends BaseActivity implements GankContract.View {
                         break;
                     case R.id.ll_share_qq:
                         break;
+                    case R.id.ll_share_weibo:
+                        break;
                     case R.id.ll_share_browser:
                         break;
                     case R.id.ll_share_copy:
@@ -169,6 +163,7 @@ public class GankActivity extends BaseActivity implements GankContract.View {
         view.findViewById(R.id.ll_share_wechat).setOnClickListener(clickListener);
         view.findViewById(R.id.ll_share_friend).setOnClickListener(clickListener);
         view.findViewById(R.id.ll_share_qq).setOnClickListener(clickListener);
+        view.findViewById(R.id.ll_share_weibo).setOnClickListener(clickListener);
         view.findViewById(R.id.ll_share_browser).setOnClickListener(clickListener);
         view.findViewById(R.id.ll_share_copy).setOnClickListener(clickListener);
 
