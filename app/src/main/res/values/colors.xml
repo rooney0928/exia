@@ -5,6 +5,7 @@
     <color name="colorAccent">#FB7299</color>
 
     <color name="black">#000</color>
+    <color name="white">#fff</color>
     <color name="pink_light">#FAD1DD</color>
     <color name="pink_dark">#FB7299</color>
     <color name="md_grey_400">#bdbdbd</color>

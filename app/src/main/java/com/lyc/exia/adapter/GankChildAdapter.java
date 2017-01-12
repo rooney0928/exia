@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.lyc.exia.R;
 import com.lyc.exia.bean.Gank;
+import com.lyc.exia.ui.WebActivity;
 import com.lyc.exia.utils.ToastUtil;
 
 import java.util.List;
@@ -55,7 +56,7 @@ public class GankChildAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     Gank g = list.get(gankChildHolder.getAdapterPosition());
-
+                    WebActivity.actionStart(context,g.getUrl(),g.getDesc());
                 }
             });
         }
