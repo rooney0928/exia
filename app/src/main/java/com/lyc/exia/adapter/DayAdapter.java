@@ -50,10 +50,10 @@ public class DayAdapter extends RecyclerView.Adapter {
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.showSimpleToast(context, "this is " + holder.getAdapterPosition());
                 DayListBean.ResultsBean bean = list.get(holder.getAdapterPosition());
                 String[] dates = bean.getPublishedAt().split("T");
-                GankActivity.actionStart(context,dates[0]);
+
+                GankActivity.actionStart(context, dates[0], bean.getTitle());
             }
         });
         return holder;
@@ -84,7 +84,7 @@ public class DayAdapter extends RecyclerView.Adapter {
         public void setData() {
             DayListBean.ResultsBean bean = list.get(getAdapterPosition());
             String url = getUrlFromHtml(bean.getContent());
-            if(!TextUtils.isEmpty(url)){
+            if (!TextUtils.isEmpty(url)) {
                 Glide.with(context).load(url).centerCrop().into(iv_header);
             }
             String publish = bean.getPublishedAt();

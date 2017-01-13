@@ -1,6 +1,5 @@
 package com.lyc.exia.ui;
 
-import android.app.ProgressDialog;
 import android.os.SystemClock;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -17,17 +16,12 @@ import android.view.View;
 
 import com.lyc.exia.R;
 import com.lyc.exia.adapter.DayAdapter;
-import com.lyc.exia.bean.DayBean;
 import com.lyc.exia.bean.DayListBean;
 import com.lyc.exia.contract.MainContract;
-import com.lyc.exia.http.MyCallBack;
-import com.lyc.exia.http.RxHttp;
 import com.lyc.exia.presenter.MainPresenter;
 import com.lyc.exia.ui.base.ToolBarActivity;
 import com.lyc.exia.utils.CommUtil;
-import com.lyc.exia.utils.LogU;
-import com.lyc.exia.utils.NetworkUtils;
-import com.lyc.exia.utils.ProgressBarUtil;
+import com.lyc.exia.utils.NetworkUtil;
 import com.lyc.exia.utils.RxHolder;
 import com.lyc.exia.utils.ToastUtil;
 
@@ -38,10 +32,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public class MainActivity extends ToolBarActivity implements MainContract.View {
     private static int PAGE_SIZE = 15;
@@ -125,7 +116,7 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
                 if (isRefresh) {
                     return;
                 }
-                if (NetworkUtils.checkNetwork(MainActivity.this)) {
+                if (NetworkUtil.checkNetwork(MainActivity.this)) {
                     mainPresenter.getDayList(PAGE_SIZE, 0);
                 }else{
                     swipe_layout.setRefreshing(false);
@@ -157,7 +148,7 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
                     // 判断是否滚动到底部
                     if (lastVisiblePos == (totalItemCount - 1) && isSlidingToLast) {
                         //加载更多功能的代码
-                        if (NetworkUtils.checkNetwork(MainActivity.this)) {
+                        if (NetworkUtil.checkNetwork(MainActivity.this)) {
                             swipe_layout.setRefreshing(true);
                             mainPresenter.getMoreDayList(PAGE_SIZE, ++page);
                         }
@@ -188,7 +179,7 @@ public class MainActivity extends ToolBarActivity implements MainContract.View {
             }
         });
 
-        if (NetworkUtils.checkNetwork(this)) {
+        if (NetworkUtil.checkNetwork(this)) {
             mainPresenter.getDayList(PAGE_SIZE, 0);
         }
 

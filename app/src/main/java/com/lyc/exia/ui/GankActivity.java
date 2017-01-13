@@ -59,10 +59,16 @@ public class GankActivity extends BaseActivity implements GankContract.View {
     private GankAdapter adapter;
     ScrollLinearLayoutManager linearLayoutManager;
 
-    public static void actionStart(Context context, String date) {
+
+    private String date;
+    private String shareUrl;
+    private String shareTitle;
+
+    public static void actionStart(Context context, String date, String title) {
         Intent intent = new Intent(context, GankActivity.class);
         //2017-01-06
         intent.putExtra("date", date);
+        intent.putExtra("title", title);
         context.startActivity(intent);
     }
 
@@ -87,8 +93,11 @@ public class GankActivity extends BaseActivity implements GankContract.View {
         rv_ganks.setAdapter(adapter);
 
         Intent intent = getIntent();
-        String date = intent.getStringExtra("date");
+        date = intent.getStringExtra("date");
+        shareTitle = intent.getStringExtra("title");
         String[] dates = date.split("-");
+
+        shareUrl = "http://gank.io/" + dates[0] + "/" + dates[1] + "/" + dates[2];
         gankPresenter.requestDayData(dates[0], dates[1], dates[2]);
 
         toolbar.setTitle(date);
@@ -111,7 +120,7 @@ public class GankActivity extends BaseActivity implements GankContract.View {
             iv_title_img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ImageActivity.actionStart(GankActivity.this,dayBean.getResults().benefitList.get(0).getUrl());
+                    ImageActivity.actionStart(GankActivity.this, dayBean.getResults().benefitList.get(0).getUrl());
                 }
             });
         }
@@ -125,13 +134,13 @@ public class GankActivity extends BaseActivity implements GankContract.View {
         fab_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent=new Intent(Intent.ACTION_SEND);
-//                intent.setType("image/*");
-//                intent.putExtra(Intent.EXTRA_SUBJECT, "Share");
-//                intent.putExtra(Intent.EXTRA_TEXT, "I have successfully share my message through my app");
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                startActivity(Intent.createChooser(intent, getTitle()));
-                openShareDialog();
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, shareUrl);
+                intent.putExtra(Intent.EXTRA_SUBJECT, shareTitle);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(Intent.createChooser(intent, "分享到"));
+//                openShareDialog();
             }
         });
     }
@@ -150,8 +159,6 @@ public class GankActivity extends BaseActivity implements GankContract.View {
                         break;
                     case R.id.ll_share_qq:
                         break;
-                    case R.id.ll_share_weibo:
-                        break;
                     case R.id.ll_share_browser:
                         break;
                     case R.id.ll_share_copy:
@@ -163,17 +170,16 @@ public class GankActivity extends BaseActivity implements GankContract.View {
         view.findViewById(R.id.ll_share_wechat).setOnClickListener(clickListener);
         view.findViewById(R.id.ll_share_friend).setOnClickListener(clickListener);
         view.findViewById(R.id.ll_share_qq).setOnClickListener(clickListener);
-        view.findViewById(R.id.ll_share_weibo).setOnClickListener(clickListener);
         view.findViewById(R.id.ll_share_browser).setOnClickListener(clickListener);
         view.findViewById(R.id.ll_share_copy).setOnClickListener(clickListener);
 
         bsd.setContentView(view);
         View parent = (View) view.getParent();
         BottomSheetBehavior behavior = BottomSheetBehavior.from(parent);
-        view.measure(0,0);
+        view.measure(0, 0);
         behavior.setPeekHeight(view.getMeasuredHeight());
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) parent.getLayoutParams();
-        params.gravity = Gravity.TOP| Gravity.CENTER_HORIZONTAL;
+        params.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
         parent.setLayoutParams(params);
         bsd.show();
     }

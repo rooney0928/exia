@@ -11,7 +11,7 @@ import android.text.TextUtils;
  * Created by Saturn_kk on 2016/10/16.
  */
 
-public class NetworkUtils {
+public class NetworkUtil {
 
     public static final String NETWORK_TYPE_WIFI = "wifi";
     public static final String NETWORK_TYPE_3G = "eg";
