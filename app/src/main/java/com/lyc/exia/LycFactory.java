@@ -5,5 +5,5 @@ package com.lyc.exia;
  */
 
 public class LycFactory {
-    public static boolean isDebug = true;
+    public static boolean isDebug = false;
 }

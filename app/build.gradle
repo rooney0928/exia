@@ -62,4 +62,7 @@ dependencies {
     compile 'com.zhy:okhttputils:2.6.2'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.1@aar'
 
+    //umeng
+    compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'com.tencent.bugly:crashreport:latest.release'
 }

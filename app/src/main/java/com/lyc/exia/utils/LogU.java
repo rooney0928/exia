@@ -2,11 +2,14 @@ package com.lyc.exia.utils;
 
 import android.util.Log;
 
+import com.lyc.exia.LycFactory;
+import com.lyc.exia.base.MyApplication;
+
 /**
  * Log工具类
  */
 public class LogU {
-	private static boolean isDebug = true;
+	private static boolean isDebug = LycFactory.isDebug;
 	
 	public static void d(String tag, String msg){
 		if(isDebug){
